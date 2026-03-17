@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Para Candu 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rose: #e8647a;
+    --rose-light: #fce8ec;
+    --rose-dark: #c94a62;
+    --blush: #f9d6de;
+    --cream: #fff8f5;
+    --gold: #d4a85a;
+    --text: #3a2030;
+    --text-muted: #8a6070;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--text);
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Floating petals */
+  .petal {
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    font-size: 18px;
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-40px) rotate(0deg); opacity: 0.7; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 2rem;
+    position: relative;
+    background: linear-gradient(160deg, #fff0f3 0%, #fff8f5 60%, #fce8ec 100%);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(232,100,122,0.12) 0%, transparent 70%);
+  }
+
+  .hero-hearts {
+    font-size: 2.5rem;
+    letter-spacing: 0.5rem;
+    margin-bottom: 2rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.6rem, 10vw, 4rem);
+    font-weight: 400;
+    color: var(--rose-dark);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--rose);
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    margin-bottom: 3rem;
+    font-weight: 300;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--rose);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    animation: bounce 1.8s ease-in-out infinite;
+  }
+  .scroll-hint span { font-size: 1.4rem; }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 5rem 1.5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-label {
+    text-align: center;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    color: var(--rose);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.7rem, 7vw, 2.6rem);
+    text-align: center;
+    color: var(--rose-dark);
+    line-height: 1.2;
+    margin-bottom: 2.5rem;
+  }
+
+  /* PHOTO CARDS */
+  .photo-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 0 auto 2rem;
+    max-width: 360px;
+    box-shadow: 0 20px 60px rgba(200,80,100,0.18), 0 4px 20px rgba(0,0,0,0.06);
+    background: #fff;
+  }
+
+  .photo-placeholder {
+    width: 100%;
+    aspect-ratio: 4/5;
+    background: linear-gradient(135deg, #fce8ec 0%, #ffe0e8 50%, #fcd6df 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem;
+  }
+
+  .photo-placeholder .icon { font-size: 3.5rem; }
+
+  .photo-placeholder p {
+    font-size: 0.9rem;
+    color: var(--rose);
+    text-align: center;
+    font-style: italic;
+    line-height: 1.5;
+    max-width: 220px;
+  }
+
+  /* La imagen real (cuando se agrega) */
+  .photo-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    aspect-ratio: 4/5;
+    border-radius: 20px;
+  }
+
+  .photo-caption {
+    padding: 1.2rem 1.5rem;
+    background: #fff;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .photo-number {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(6px);
+    border-radius: 50px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.75rem;
+    color: var(--rose-dark);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    border: 1px solid rgba(232,100,122,0.2);
+  }
+
+  /* ALTERNATING SECTIONS */
+  .section-alt { background: linear-gradient(160deg, #fff0f3, #fff8f5); }
+
+  /* DIVIDER */
+  .divider {
+    text-align: center;
+    font-size: 1.4rem;
+    letter-spacing: 0.8rem;
+    color: var(--rose);
+    opacity: 0.6;
+    margin: 1rem 0;
+  }
+
+  /* MESSAGE BOX */
+  .message-box {
+    max-width: 360px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem 2rem;
+    border-left: 4px solid var(--rose);
+    box-shadow: 0 8px 40px rgba(200,80,100,0.1);
+  }
+
+  .message-box p {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: var(--text);
+    font-weight: 300;
+  }
+
+  .message-box p strong {
+    color: var(--rose-dark);
+    font-weight: 600;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    max-width: 360px;
+    margin: 0 auto;
+    position: relative;
+    padding-left: 2rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.55rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--rose-light), var(--rose), var(--rose-light));
+    border-radius: 2px;
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -1.5rem;
+    top: 0.3rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--rose);
+    border: 3px solid var(--cream);
+    box-shadow: 0 0 0 2px var(--rose-light);
+  }
+  .timeline-date {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--rose);
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+  .timeline-text {
+    font-size: 0.98rem;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* FINAL QUESTION */
+  .question-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(160deg, #fff0f3 0%, #ffe8ed 50%, #fce0e7 100%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .question-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(232,100,122,0.1) 0%, transparent 70%);
+  }
+
+  .big-heart {
+    font-size: 5rem;
+    animation: heartbeat 1.2s ease-in-out infinite;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    14% { transform: scale(1.18); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.12); }
+    70% { transform: scale(1); }
+  }
+
+  .question-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 9vw, 3.2rem);
+    color: var(--rose-dark);
+    line-height: 1.15;
+    margin-bottom: 0.7rem;
+    position: relative;
+  }
+
+  .question-title .name {
+    display: block;
+    font-style: italic;
+    font-size: clamp(2.4rem, 11vw, 3.8rem);
+    color: var(--rose);
+  }
+
+  .question-sub {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 3.5rem;
+    line-height: 1.6;
+    max-width: 280px;
+    font-style: italic;
+  }
+
+  /* BUTTONS */
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 280px;
+    position: relative;
+  }
+
+  .btn-yes {
+    padding: 1.2rem 2rem;
+    background: linear-gradient(135deg, var(--rose), var(--rose-dark));
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.15rem;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(232,100,122,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-yes:active { transform: scale(0.97); }
+
+  .btn-no {
+    padding: 1rem 2rem;
+    background: #f4b8c4;
+    color: var(--rose);
+    border: 1.5px solid var(--rose-light);
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  /* CELEBRATION */
+  .celebration {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(255,240,243,0.96);
+    z-index: 1000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    animation: fadeIn 0.5s ease;
+  }
+  .celebration.show { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .celebration h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 9vw, 3.5rem);
+    color: var(--rose-dark);
+    margin: 1rem 0;
+    line-height: 1.2;
+  }
+  .celebration p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 300px;
+    margin-top: 0.5rem;
+  }
+  .confetti-emoji {
+    font-size: 4rem;
+    animation: spin 1s ease-out;
+  }
+  @keyframes spin {
+    from { transform: rotate(-20deg) scale(0.5); opacity: 0; }
+    to { transform: rotate(0deg) scale(1); opacity: 1; }
+  }
+
+  /* UPLOAD HINT */
+  .upload-hint {
+    background: rgba(232,100,122,0.07);
+    border: 1.5px dashed var(--rose);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    margin: 0 auto 2rem;
+    max-width: 360px;
+  }
+  .upload-hint p {
+    font-size: 0.85rem;
+    color: var(--rose);
+    line-height: 1.6;
+  }
+  .upload-hint code {
+    background: rgba(232,100,122,0.12);
+    padding: 0.15rem 0.5rem;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    color: var(--rose-dark);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- Floating petals -->
+<div class="petal" style="left:8%; animation-duration:7s; animation-delay:0s;">🌸</div>
+<div class="petal" style="left:25%; animation-duration:9s; animation-delay:1.5s;">💕</div>
+<div class="petal" style="left:55%; animation-duration:8s; animation-delay:3s;">🌸</div>
+<div class="petal" style="left:75%; animation-duration:6.5s; animation-delay:0.8s;">💗</div>
+<div class="petal" style="left:90%; animation-duration:10s; animation-delay:2s;">🌸</div>
+<div class="petal" style="left:40%; animation-duration:7.5s; animation-delay:4s;">🌷</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-hearts">💗 💕 💗</div>
+  <h1>Candu hay algo que<br>quiero <em>preguntarte</em></h1>
+  <p class="hero-subtitle">Con mucho amor de renzin para can 💘</p>
+  <div class="scroll-hint">
+    <span>↓</span>
+    seguí leyendo
+  </div>
+</section>
+
+<!-- SECCIÓN 1 - Foto 1 -->
+<section class="section" id="s1">
+  
+
+  <div class="photo-card">
+    <!-- 📸 FOTO 1: Reemplazá el bloque .photo-placeholder por: <img src="foto1.jpg" alt="Nosotros"> -->
+    <div class="photo-placeholder">
+      <img src="foto1.jpeg"/>
+    </div>
+    <div class="photo-number">01</div>
+
+  </div>
+
+  <div class="message-box">
+    <p>Desde que nos conocimos en aquellos carnavales no sabía cuanto te iba a  <strong>querer 🩷</strong></p>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="divider section" id="div1">🌸 · 🌸 · 🌸</div>
+
+<!-- SECCIÓN 2 - Foto 2 -->
+<section class="section section-alt" id="s2">
+  <p class="section-label">Lo que más me gusta</p>
+  <h2 class="section-title">Como sos </h2>
+
+  <div class="photo-card">
+    <!-- 📸 FOTO 2 -->
+    <div class="photo-placeholder">
+      <img src="foto2.jpeg"/>
+    </div>
+    <div class="photo-number">02</div>
+
+  </div>
+
+  <div class="message-box">
+    <p>Me encanta cómo reís, como me abrazas, tus besitos, todo. Cada vez que me hablas es  <strong>lo que mas me encanta del dia</strong>.</p>
+  </div>
+</section>
+
+<!-- SECCIÓN 4 - Foto 3 -->
+<section class="section section-alt" id="s4">
+  <p class="section-label">Una de mis favoritas</p>
+  <h2 class="section-title">Este momento</h2>
+
+  <div class="photo-card">
+    <!-- 📸 FOTO 3 -->
+    <div class="photo-placeholder">
+      <img src="foto3.jpeg"/>
+    </div>
+    <div class="photo-number">03</div>
+
+  </div>
+
+  <div class="message-box">
+    <p>Cuando estoy con vos, todo se siente diferente. Mejor. Como si el mundo tuviera <strong>más colores</strong>.</p>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="divider section" id="div2">💕 · 💗 · 💕</div>
+
+<!-- SECCIÓN 5 - Foto 4 -->
+<section class="section" id="s5">
+  <p class="section-label">Y lo más importante</p>
+  <h2 class="section-title">Lo que siento</h2>
+
+  <div class="photo-card">
+    <!-- 📸 FOTO 4 -->
+    <div class="photo-placeholder">
+      <div class="icon">💝</div>
+      <img src="foto4.jpeg"/>
+    </div>
+    <div class="photo-number">04</div>
+
+  </div>
+
+  <div class="message-box">
+    <p>Me gustás mucho, Candu. Cada día más. Y quería que lo supieras de la manera más <strong>honesta y especial</strong> que se me ocurrió.</p>
+  </div>
+</section>
+
+<!-- PREGUNTA FINAL -->
+<section class="question-section section" id="final">
+  <div class="big-heart">💗</div>
+  <h2 class="question-title">
+    ¿Querés ser
+    <span class="name">mi novia,<br>Candu?</span>
+  </h2>
+  <br>
+
+  <div class="btn-group">
+    <button class="btn-yes" onclick="yesClick()">💕 ¡Sí, quiero!</button>
+    <button class="btn-no" id="btnNo" onmouseover="moveNo()" onclick="moveNo()">Mejor no...</button>
+  </div>
+</section>
+
+<!-- CELEBRACIÓN -->
+<div class="celebration" id="celebration">
+  <div class="confetti-emoji">💘</div>
+  <h2>Te amo Nenis<br>no sabes todo lo feliz que me haces</h2>
+  <div style="font-size:3rem; margin: 1rem 0;">💗💗💗</div>
+  <p>Gracias por decir que sí. No te vas a arrepentir cann . Te quiero muchisimo mi polentita con salsa🌹</p>
+</div>
+
+<script>
+  // Intersection Observer para animaciones al scrollear
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+  // Botón "No" que escapa
+  const btnNo = document.getElementById('btnNo');
+  let noClicks = 0;
+  const noTexts = ['Mejor no...', 'Ella jura 💜', 'Que haces cann 😥', 'Perdes aura decis que no' , 'Mejor no hay un NO 🫤'];
+
+  function moveNo() {
+    noClicks++;
+    if (noClicks <= 4) {
+      btnNo.textContent = noTexts[Math.min(noClicks, noTexts.length - 1)];
+      const max = 200;
+      const rx = (Math.random() - 0.5) * max;
+      const ry = (Math.random() - 0.5) * max;
+      btnNo.style.transform = `translate(${rx}px, ${ry}px)`;
+      btnNo.style.transition = 'transform 0.3s ease';
+    } else {
+      btnNo.style.display = 'none';
+    }
+  }
+
+  function yesClick() {
+    document.getElementById('celebration').classList.add('show');
+    launchConfetti();
+  }
+
+  function launchConfetti() {
+    const emojis = ['🎉','💕','🌸','💗','✨','🌹','💝','🎊'];
+    for (let i = 0; i < 30; i++) {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.style.cssText = `
+          position: fixed;
+          font-size: ${14 + Math.random() * 20}px;
+          left: ${Math.random() * 100}vw;
+          top: -30px;
+          z-index: 2000;
+          pointer-events: none;
+          animation: fall ${3 + Math.random() * 3}s linear forwards;
+        `;
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 6000);
+      }, i * 100);
+    }
+  }
+</script>
+</body>
+</html>
